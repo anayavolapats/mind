@@ -1,1 +1,1 @@
-# mind
+Run the main file :)
