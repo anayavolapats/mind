@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>happy.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #8c8c8c; font-style: italic;}
+.s4 { color: #1750eb;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+happy.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">cv2</span>
+
+<span class="s0">def </span><span class="s1">play_video(video_file):</span>
+    <span class="s1">cap = cv2.VideoCapture(video_file)</span>
+    <span class="s0">if not </span><span class="s1">cap.isOpened():</span>
+        <span class="s1">print(</span><span class="s2">&quot;Error: Could not open video.&quot;</span><span class="s1">)</span>
+        <span class="s0">return</span>
+
+    <span class="s3"># Get screen resolution (adjust as needed)</span>
+    <span class="s1">screen_width = </span><span class="s4">1440  </span><span class="s3"># Replace with your screen width resolution</span>
+    <span class="s1">screen_height = </span><span class="s4">900  </span><span class="s3"># Replace with your screen height resolution</span>
+
+    <span class="s3"># Set video window size to match screen resolution</span>
+    <span class="s1">cv2.namedWindow(</span><span class="s2">'Video Player'</span><span class="s1">, cv2.WND_PROP_FULLSCREEN)</span>
+    <span class="s1">cv2.setWindowProperty(</span><span class="s2">'Video Player'</span><span class="s1">, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)</span>
+
+    <span class="s0">while True</span><span class="s1">:</span>
+        <span class="s1">ret, frame = cap.read()</span>
+        <span class="s0">if not </span><span class="s1">ret:</span>
+            <span class="s0">break</span>
+
+        <span class="s3"># Resize frame to match screen resolution</span>
+        <span class="s1">frame = cv2.resize(frame, (screen_width, screen_height))</span>
+
+        <span class="s1">cv2.imshow(</span><span class="s2">'Video Player'</span><span class="s1">, frame)</span>
+        <span class="s0">if </span><span class="s1">cv2.waitKey(</span><span class="s4">1</span><span class="s1">) &amp; </span><span class="s4">0xFF </span><span class="s1">== ord(</span><span class="s2">'q'</span><span class="s1">):</span>
+            <span class="s0">break</span>
+
+    <span class="s1">cap.release()</span>
+    <span class="s1">cv2.destroyAllWindows()</span>
+
+<span class="s0">if </span><span class="s1">__name__ == </span><span class="s2">&quot;__main__&quot;</span><span class="s1">:</span>
+    <span class="s1">video_file = </span><span class="s2">'/Users/yanatsapalova/hci_lab/restarted/media/success.mp4'  </span><span class="s3"># Replace with your video file path</span>
+
+    <span class="s1">play_video(video_file)</span>
+</pre>
+</body>
+</html>

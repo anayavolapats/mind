@@ -1,0 +1,95 @@
+<html>
+<head>
+<title>m5.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #8c8c8c; font-style: italic;}
+.s3 { color: #067d17;}
+.s4 { color: #1750eb;}
+.s5 { color: #0037a6;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+m5.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">cv2</span>
+<span class="s0">import </span><span class="s1">time</span>
+<span class="s0">import </span><span class="s1">numpy </span><span class="s0">as </span><span class="s1">np</span>
+
+<span class="s0">def </span><span class="s1">perform_object_recognition():</span>
+    <span class="s2"># Load the pre-trained model for object detection</span>
+    <span class="s1">net = cv2.dnn.readNetFromCaffe(</span><span class="s3">'models/MobileNetSSD_deploy.prototxt.txt'</span><span class="s1">, </span><span class="s3">'models/MobileNetSSD_deploy.caffemodel'</span><span class="s1">)</span>
+
+    <span class="s2"># Open a video stream (adjust camera index or video file path as needed)</span>
+    <span class="s1">cap = cv2.VideoCapture(</span><span class="s4">1</span><span class="s1">)  </span><span class="s2"># 0 for default camera, or provide a path to a video file</span>
+
+    <span class="s0">if not </span><span class="s1">cap.isOpened():</span>
+        <span class="s1">print(</span><span class="s3">&quot;Error: Could not open video stream or file.&quot;</span><span class="s1">)</span>
+        <span class="s0">return</span>
+
+    <span class="s2"># Get screen resolution</span>
+    <span class="s1">screen_width, screen_height = </span><span class="s4">1920</span><span class="s1">, </span><span class="s4">1080  </span><span class="s2"># Adjust as per your screen resolution</span>
+
+    <span class="s2"># Create a full-screen window</span>
+    <span class="s1">cv2.namedWindow(</span><span class="s3">'Object Detection'</span><span class="s1">, cv2.WND_PROP_FULLSCREEN)</span>
+    <span class="s1">cv2.setWindowProperty(</span><span class="s3">'Object Detection'</span><span class="s1">, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)</span>
+
+    <span class="s2"># Start time for object recognition duration</span>
+    <span class="s1">start_time = time.time()</span>
+
+    <span class="s0">while </span><span class="s1">time.time() - start_time &lt; </span><span class="s4">10</span><span class="s1">:  </span><span class="s2"># Perform object recognition for 10 seconds</span>
+        <span class="s1">ret, frame = cap.read()</span>
+        <span class="s0">if not </span><span class="s1">ret:</span>
+            <span class="s0">break</span>
+
+        <span class="s2"># Resize frame for faster processing</span>
+        <span class="s1">frame_resized = cv2.resize(frame, (</span><span class="s4">300</span><span class="s1">, </span><span class="s4">300</span><span class="s1">))</span>
+
+        <span class="s2"># Prepare input image to run through the network</span>
+        <span class="s1">blob = cv2.dnn.blobFromImage(frame_resized, </span><span class="s4">0.007843</span><span class="s1">, (</span><span class="s4">300</span><span class="s1">, </span><span class="s4">300</span><span class="s1">), </span><span class="s4">127.5</span><span class="s1">)</span>
+
+        <span class="s2"># Set the input to the network and perform inference</span>
+        <span class="s1">net.setInput(blob)</span>
+        <span class="s1">detections = net.forward()</span>
+
+        <span class="s2"># Loop over the detections</span>
+        <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(detections.shape[</span><span class="s4">2</span><span class="s1">]):</span>
+            <span class="s1">confidence = detections[</span><span class="s4">0</span><span class="s1">, </span><span class="s4">0</span><span class="s1">, i, </span><span class="s4">2</span><span class="s1">]</span>
+            <span class="s0">if </span><span class="s1">confidence &gt; </span><span class="s4">0.5</span><span class="s1">:  </span><span class="s2"># Filter detections by confidence threshold</span>
+                <span class="s1">class_id = int(detections[</span><span class="s4">0</span><span class="s1">, </span><span class="s4">0</span><span class="s1">, i, </span><span class="s4">1</span><span class="s1">])</span>
+                <span class="s1">class_name = classNames[class_id]</span>
+                <span class="s1">print(</span><span class="s3">f&quot;Detected object: </span><span class="s5">{</span><span class="s1">class_name</span><span class="s5">}</span><span class="s3">, Confidence: </span><span class="s5">{</span><span class="s1">confidence</span><span class="s5">:</span><span class="s3">.2f</span><span class="s5">}</span><span class="s3">&quot;</span><span class="s1">)</span>
+
+                <span class="s2"># Draw bounding box around the detected object</span>
+                <span class="s1">box = detections[</span><span class="s4">0</span><span class="s1">, </span><span class="s4">0</span><span class="s1">, i, </span><span class="s4">3</span><span class="s1">:</span><span class="s4">7</span><span class="s1">] * np.array([frame.shape[</span><span class="s4">1</span><span class="s1">], frame.shape[</span><span class="s4">0</span><span class="s1">], frame.shape[</span><span class="s4">1</span><span class="s1">], frame.shape[</span><span class="s4">0</span><span class="s1">]])</span>
+                <span class="s1">(startX, startY, endX, endY) = box.astype(</span><span class="s3">&quot;int&quot;</span><span class="s1">)</span>
+                <span class="s1">cv2.rectangle(frame, (startX, startY), (endX, endY), (</span><span class="s4">0</span><span class="s1">, </span><span class="s4">255</span><span class="s1">, </span><span class="s4">0</span><span class="s1">), </span><span class="s4">2</span><span class="s1">)</span>
+                <span class="s1">y = startY - </span><span class="s4">15 </span><span class="s0">if </span><span class="s1">startY - </span><span class="s4">15 </span><span class="s1">&gt; </span><span class="s4">15 </span><span class="s0">else </span><span class="s1">startY + </span><span class="s4">15</span>
+                <span class="s1">cv2.putText(frame, class_name, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, </span><span class="s4">0.5</span><span class="s1">, (</span><span class="s4">0</span><span class="s1">, </span><span class="s4">255</span><span class="s1">, </span><span class="s4">0</span><span class="s1">), </span><span class="s4">2</span><span class="s1">)</span>
+
+        <span class="s2"># Display the output frame</span>
+        <span class="s1">cv2.imshow(</span><span class="s3">&quot;Object Detection&quot;</span><span class="s1">, frame)</span>
+        <span class="s0">if </span><span class="s1">cv2.waitKey(</span><span class="s4">1</span><span class="s1">) &amp; </span><span class="s4">0xFF </span><span class="s1">== ord(</span><span class="s3">'q'</span><span class="s1">):</span>
+            <span class="s0">break</span>
+
+    <span class="s2"># Release the video stream and close all windows</span>
+    <span class="s1">cap.release()</span>
+    <span class="s1">cv2.destroyAllWindows()</span>
+
+<span class="s0">if </span><span class="s1">__name__ == </span><span class="s3">&quot;__main__&quot;</span><span class="s1">:</span>
+    <span class="s2"># Define the classes (adjust as per your model)</span>
+    <span class="s1">classNames = {</span><span class="s4">0</span><span class="s1">: </span><span class="s3">'background'</span><span class="s1">, </span><span class="s4">1</span><span class="s1">: </span><span class="s3">'aeroplane'</span><span class="s1">, </span><span class="s4">2</span><span class="s1">: </span><span class="s3">'bicycle'</span><span class="s1">, </span><span class="s4">3</span><span class="s1">: </span><span class="s3">'bird'</span><span class="s1">, </span><span class="s4">4</span><span class="s1">: </span><span class="s3">'boat'</span><span class="s1">,</span>
+                  <span class="s4">5</span><span class="s1">: </span><span class="s3">'bottle'</span><span class="s1">, </span><span class="s4">6</span><span class="s1">: </span><span class="s3">'bus'</span><span class="s1">, </span><span class="s4">7</span><span class="s1">: </span><span class="s3">'car'</span><span class="s1">, </span><span class="s4">8</span><span class="s1">: </span><span class="s3">'cat'</span><span class="s1">, </span><span class="s4">9</span><span class="s1">: </span><span class="s3">'chair'</span><span class="s1">, </span><span class="s4">10</span><span class="s1">: </span><span class="s3">'cow'</span><span class="s1">,</span>
+                  <span class="s4">11</span><span class="s1">: </span><span class="s3">'diningtable'</span><span class="s1">, </span><span class="s4">12</span><span class="s1">: </span><span class="s3">'dog'</span><span class="s1">, </span><span class="s4">13</span><span class="s1">: </span><span class="s3">'horse'</span><span class="s1">, </span><span class="s4">14</span><span class="s1">: </span><span class="s3">'motorbike'</span><span class="s1">,</span>
+                  <span class="s4">15</span><span class="s1">: </span><span class="s3">'person'</span><span class="s1">, </span><span class="s4">16</span><span class="s1">: </span><span class="s3">'pottedplant'</span><span class="s1">, </span><span class="s4">17</span><span class="s1">: </span><span class="s3">'sheep'</span><span class="s1">, </span><span class="s4">18</span><span class="s1">: </span><span class="s3">'sofa'</span><span class="s1">,</span>
+                  <span class="s4">19</span><span class="s1">: </span><span class="s3">'train'</span><span class="s1">, </span><span class="s4">20</span><span class="s1">: </span><span class="s3">'tvmonitor'</span><span class="s1">}</span>
+
+    <span class="s1">perform_object_recognition()</span>
+</pre>
+</body>
+</html>

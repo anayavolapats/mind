@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>main.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #067d17;}
+.s3 { color: #0037a6;}
+.s4 { color: #8c8c8c; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">subprocess</span>
+
+<span class="s0">def </span><span class="s1">run_module(module_path):</span>
+    <span class="s0">try</span><span class="s1">:</span>
+        <span class="s1">print(</span><span class="s2">f&quot;Running module at: </span><span class="s3">{</span><span class="s1">module_path</span><span class="s3">}</span><span class="s2">&quot;</span><span class="s1">)</span>
+        <span class="s1">subprocess.run([</span><span class="s2">'python'</span><span class="s1">, module_path], check=</span><span class="s0">True</span><span class="s1">)</span>
+        <span class="s1">print(</span><span class="s2">&quot;Module completed.&quot;</span><span class="s1">)</span>
+    <span class="s0">except </span><span class="s1">subprocess.CalledProcessError </span><span class="s0">as </span><span class="s1">e:</span>
+        <span class="s1">print(</span><span class="s2">f&quot;Error running </span><span class="s3">{</span><span class="s1">module_path</span><span class="s3">}</span><span class="s2">:&quot;</span><span class="s1">)</span>
+        <span class="s1">print(e)</span>
+
+<span class="s1">glass = </span><span class="s2">&quot;red&quot;</span>
+
+<span class="s0">if </span><span class="s1">__name__ == </span><span class="s2">&quot;__main__&quot;</span><span class="s1">:</span>
+    <span class="s4"># Define paths to each module script</span>
+    <span class="s1">module_paths = [</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m1.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m2.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m3.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m5.1.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m5.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m8.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m7.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m6.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m9.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m11.py'</span><span class="s1">,</span>
+        <span class="s2">'/Users/yanatsapalova/hci_lab/restarted/m10.py'</span><span class="s1">,</span>
+    <span class="s1">]</span>
+
+    <span class="s4"># Run each module sequentially</span>
+    <span class="s0">for </span><span class="s1">module_path </span><span class="s0">in </span><span class="s1">module_paths:</span>
+        <span class="s1">run_module(module_path)</span>
+
+    <span class="s0">if </span><span class="s1">(glass == </span><span class="s2">&quot;red&quot;</span><span class="s1">):</span>
+        <span class="s1">run_module(</span><span class="s2">'/Users/yanatsapalova/hci_lab/restarted/angry.py'</span><span class="s1">)</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s1">run_module(</span><span class="s2">'/Users/yanatsapalova/hci_lab/restarted/happy.py'</span><span class="s1">)</span>
+
+    <span class="s1">print(</span><span class="s2">&quot;All modules completed successfully.&quot;</span><span class="s1">)</span>
+</pre>
+</body>
+</html>
